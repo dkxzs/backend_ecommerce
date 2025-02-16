@@ -22,16 +22,16 @@ const userSchema = new Schema(
       required: true,
     },
     phone: {
-      type: Number,
+      type: String,
       required: true,
     },
     access_token: {
       type: String,
-      required: true,
+      required: false,
     },
     refresh_token: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   {

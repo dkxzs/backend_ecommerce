@@ -28,7 +28,11 @@ const productSchema = new Schema(
       type: Number,
       required: true,
     },
-    short_description: {
+    category: {
+      type: String,
+      required: true,
+    },
+    shortDescription: {
       type: String,
       required: true,
     },
