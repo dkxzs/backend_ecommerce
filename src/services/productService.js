@@ -18,6 +18,7 @@ const createProductService = async (data) => {
       return {
         EC: 1,
         EM: "Product already exists",
+        DT: "",
       };
     }
     let res = await Product.create({
@@ -32,11 +33,17 @@ const createProductService = async (data) => {
       countInStock,
     });
     return {
+      EM: "Create product successfully",
       EC: 0,
       DT: res,
     };
   } catch (error) {
-    return null;
+    console.log(error);
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
@@ -47,15 +54,22 @@ const updateProductService = async (id, data) => {
       return {
         EC: 1,
         EM: "Product not found",
+        DT: "",
       };
     }
     let res = await Product.findOneAndUpdate({ _id: id }, data, { new: true });
     return {
+      EM: "Update product successfully",
       EC: 0,
       DT: res,
     };
   } catch (error) {
-    return null;
+    console.log(error);
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
@@ -66,15 +80,22 @@ const getDetailProductService = async (id) => {
       return {
         EC: 1,
         EM: "Product not found",
+        DT: "",
       };
     }
     let res = await Product.findOne({ _id: id });
     return {
+      EM: "Get detail product successfully",
       EC: 0,
       DT: res,
     };
   } catch (error) {
-    return null;
+    console.log(error);
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
@@ -85,27 +106,86 @@ const deleteProductService = async (id) => {
       return {
         EC: 1,
         EM: "Product not found",
+        DT: "",
       };
     }
     await Product.findOneAndDelete({ _id: id });
     return {
       EC: 0,
       EM: "Delete product successfully",
+      DT: "",
     };
   } catch (error) {
-    return null;
+    console.log(error);
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
-const getAllProductService = async () => {
+const getAllProductService = async (page = 0, limit = 2, sort, filter) => {
   try {
-    let res = await Product.find();
+    const totalProduct = await Product.countDocuments();
+
+    if (filter) {
+      const label = filter[0];
+      const allObjectFilter = await Product.find({
+        [label]: { $regex: filter[1] },
+      });
+      return {
+        EM: "Get all product successfully",
+        EC: 0,
+        DT: {
+          totalProduct: totalProduct,
+          totalPage: Math.ceil(allObjectFilter.length / limit),
+          pageCurrent: parseInt(page) + 1,
+          data: allObjectFilter,
+        },
+      };
+    }
+
+    if (sort) {
+      const objectSort = {};
+      objectSort[sort[1]] = sort[0];
+      console.log("check sort: ", objectSort);
+
+      let res = await Product.find()
+        .limit(limit)
+        .skip(page * limit)
+        .sort(objectSort);
+      return {
+        EM: "Get all product successfully",
+        EC: 0,
+        DT: {
+          totalProduct,
+          totalPage: Math.ceil(totalProduct / limit),
+          pageCurrent: parseInt(page) + 1,
+          data: res,
+        },
+      };
+    }
+    let res = await Product.find()
+      .limit(limit)
+      .skip(page * limit);
     return {
+      EM: "Get all product successfully",
       EC: 0,
-      DT: res,
+      DT: {
+        totalProduct,
+        totalPage: Math.ceil(totalProduct / limit),
+        pageCurrent: parseInt(page) + 1,
+        data: res,
+      },
     };
   } catch (error) {
-    return null;
+    console.log(error);
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 

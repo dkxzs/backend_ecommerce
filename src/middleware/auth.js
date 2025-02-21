@@ -27,11 +27,7 @@ const authUser = (req, res, next) => {
     if (err) {
       return res.status(404).json({ EC: 1, EM: "Invalid token" });
     }
-    const { payload } = user;
-    console.log("check payload: ", payload.id);
-    console.log("check userId: ", userId.id);
-
-    if (payload?.isAdmin || payload?.id === userId.id) {
+    if (user?.isAdmin || user?.id === userId.id) {
       next();
     } else {
       return res.status(404).json({ EC: 1, EM: "Authorization failed" });

@@ -71,7 +71,14 @@ const deleteProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
   try {
-    let data = await getAllProductService();
+    let { page, limit, sort, filter } = req.query;
+
+    let data = await getAllProductService(
+      Number(page) || 0,
+      Number(limit) || 3,
+      sort,
+      filter
+    );
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });

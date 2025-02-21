@@ -10,20 +10,17 @@ import {
 
 const createUser = async (req, res) => {
   try {
-    const { name, email, password, confirmPassword, phone } = req.body;
+    const { name, email, password } = req.body;
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const isValidEmail = reg.test(email);
-    if (!name || !email || !password || !confirmPassword || !phone) {
+    if (!name || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
     if (isValidEmail === false) {
       return res.status(400).json({ message: "Invalid email" });
     }
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Password doesn't match" });
-    }
 
-    let data = await createUserService(name, email, password, phone);
+    let data = await createUserService(name, email, password);
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -37,7 +34,12 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
     let data = await loginUserService(email, password);
-    return res.status(200).json(data);
+    const { refresh_token, ...filteredData } = data.DT;
+    res.cookie("refresh_token", refresh_token, {
+      httpOnly: true,
+      secure: false,
+    });
+    return res.status(200).json({ ...data, DT: filteredData });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -89,6 +91,8 @@ const getAllUser = async (req, res) => {
 const getDetailUser = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("check id: ", id);
+
     let data = await getDetailUserService(id);
     return res.status(200).json(data);
   } catch (error) {
@@ -98,7 +102,7 @@ const getDetailUser = async (req, res) => {
 
 const refreshToken = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.cookies.refresh_token;
     if (!token) {
       return res.status(404).json({ message: "Token is required" });
     }

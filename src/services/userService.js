@@ -3,29 +3,34 @@ import bcrypt from "bcrypt";
 import { generateRefreshToken, generateToken } from "./jwtService.js";
 const saltRounds = 10;
 
-const createUserService = async (name, email, password, phone) => {
+const createUserService = async (name, email, password) => {
   try {
     let checkEmail = await User.findOne({ email: email });
     if (checkEmail) {
       return {
-        message: "Email already exists",
+        EM: "Email already exists",
+        EC: 1,
+        DT: "",
       };
     }
-
     const hashPassword = await bcrypt.hash(password, saltRounds);
     let res = await User.create({
       name,
       email,
       password: hashPassword,
-      phone,
     });
     return {
+      EM: "Create user successfully",
       EC: 0,
       DT: res,
     };
   } catch (err) {
     console.log(err);
-    return null;
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
@@ -36,14 +41,15 @@ const loginUserService = async (email, password) => {
       let checkPassword = await bcrypt.compare(password, res.password);
       if (checkPassword) {
         const access_token = generateToken({
-          id: res.id,
+          id: res._id.toString(),
           isAdmin: res.isAdmin,
         });
         const refresh_token = generateRefreshToken({
-          id: res.id,
+          id: res._id.toString(),
           isAdmin: res.isAdmin,
         });
         return {
+          EM: "Login successfully",
           EC: 0,
           DT: {
             access_token,
@@ -58,17 +64,23 @@ const loginUserService = async (email, password) => {
         return {
           EC: 1,
           EM: "Email/Password is incorrect",
+          DT: "",
         };
       }
     } else {
       return {
         EC: 1,
         EM: "Email/Password is incorrect",
+        DT: "",
       };
     }
   } catch (err) {
     console.log(err);
-    return null;
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
@@ -76,12 +88,17 @@ const updateUserService = async (id, data) => {
   try {
     let res = await User.findOneAndUpdate({ _id: id }, data, { new: true });
     return {
+      EM: "Update user successfully",
       EC: 0,
       DT: res,
     };
   } catch (err) {
     console.log(err);
-    return null;
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
@@ -91,10 +108,15 @@ const deleteUserService = async (userId) => {
     return {
       EC: 0,
       EM: "Delete user successfully",
+      DT: "",
     };
   } catch (err) {
     console.log(err);
-    return null;
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
@@ -102,12 +124,17 @@ const getAllUserService = async () => {
   try {
     let res = await User.find();
     return {
+      EM: "Get all user successfully",
       EC: 0,
       DT: res,
     };
   } catch (err) {
     console.log(err);
-    return null;
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
@@ -115,12 +142,17 @@ const getDetailUserService = async (userId) => {
   try {
     let res = await User.findOne({ _id: userId });
     return {
+      EM: "Get detail user successfully",
       EC: 0,
       DT: res,
     };
   } catch (err) {
     console.log(err);
-    return null;
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
   }
 };
 
