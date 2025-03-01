@@ -30,16 +30,30 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    // if (!email || !password) {
+    //   return res.status(400).json({ message: "All fields are required" });
+    // }
     let data = await loginUserService(email, password);
     const { refresh_token, ...filteredData } = data.DT;
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
       secure: false,
+      // sameSite: "strict",
     });
     return res.status(200).json({ ...data, DT: filteredData });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("refresh_token");
+    return res.status(200).json({
+      EC: 0,
+      EM: "Logout successfully",
+      DT: {},
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -48,19 +62,6 @@ const loginUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    const { name, email, password, confirmPassword, phone } = req.body;
-    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const isValidEmail = reg.test(email);
-    if (!name || !email || !password || !confirmPassword || !phone) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-    if (isValidEmail === false) {
-      return res.status(400).json({ message: "Invalid email" });
-    }
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Password doesn't match" });
-    }
     let data = await updateUserService(id, req.body);
     return res.status(200).json(data);
   } catch (error) {
@@ -91,7 +92,6 @@ const getAllUser = async (req, res) => {
 const getDetailUser = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("check id: ", id);
 
     let data = await getDetailUserService(id);
     return res.status(200).json(data);
@@ -104,7 +104,7 @@ const refreshToken = async (req, res) => {
   try {
     const token = req.cookies.refresh_token;
     if (!token) {
-      return res.status(404).json({ message: "Token is required" });
+      return res.status(404).json({ message: "Token is not found" });
     }
     const data = await refreshTokenJWTService(token);
     return res.status(200).json(data);
@@ -121,4 +121,5 @@ export {
   getAllUser,
   getDetailUser,
   refreshToken,
+  logoutUser,
 };

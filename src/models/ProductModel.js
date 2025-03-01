@@ -40,6 +40,19 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
+    discount: {
+      type: Number,
+      required: false,
+    },
+    selled: {
+      type: Number,
+      required: false,
+    },
+    is_new: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
   },
   {
     timestamps: true,

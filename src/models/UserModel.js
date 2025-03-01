@@ -23,15 +23,12 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      required: false,
     },
-    access_token: {
+    address: {
       type: String,
-      required: false,
     },
-    refresh_token: {
+    avatar: {
       type: String,
-      required: false,
     },
   },
   {

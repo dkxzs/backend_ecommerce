@@ -35,8 +35,7 @@ const refreshTokenJWTService = async (token) => {
           DT: "",
         };
       }
-      const { payload } = user;
-      data = payload;
+      data = user;
     });
     const access_token = generateToken({
       id: data?.id,

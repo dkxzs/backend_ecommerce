@@ -34,6 +34,8 @@ const createUserService = async (name, email, password) => {
   }
 };
 
+
+
 const loginUserService = async (email, password) => {
   try {
     let res = await User.findOne({ email: email });
@@ -86,6 +88,8 @@ const loginUserService = async (email, password) => {
 
 const updateUserService = async (id, data) => {
   try {
+    // const hashPassword = await bcrypt.hash(data.password, saltRounds);
+    // data.password = hashPassword;
     let res = await User.findOneAndUpdate({ _id: id }, data, { new: true });
     return {
       EM: "Update user successfully",
@@ -141,6 +145,7 @@ const getAllUserService = async () => {
 const getDetailUserService = async (userId) => {
   try {
     let res = await User.findOne({ _id: userId });
+
     return {
       EM: "Get detail user successfully",
       EC: 0,

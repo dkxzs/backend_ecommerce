@@ -12,6 +12,7 @@ const createProductService = async (data) => {
       type,
       rating,
       countInStock,
+      discount = 0,
     } = data;
     const checkProduct = await Product.findOne({ name: name });
     if (checkProduct) {
@@ -31,6 +32,7 @@ const createProductService = async (data) => {
       type,
       rating,
       countInStock,
+      discount,
     });
     return {
       EM: "Create product successfully",
@@ -125,7 +127,7 @@ const deleteProductService = async (id) => {
   }
 };
 
-const getAllProductService = async (page = 0, limit = 2, sort, filter) => {
+const getAllProductService = async (page = 0, limit = 10, sort, filter) => {
   try {
     const totalProduct = await Product.countDocuments();
 

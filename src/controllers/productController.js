@@ -29,6 +29,7 @@ const createProduct = async (req, res) => {
       !type ||
       !rating ||
       !countInStock
+
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -75,7 +76,7 @@ const getAllProduct = async (req, res) => {
 
     let data = await getAllProductService(
       Number(page) || 0,
-      Number(limit) || 3,
+      Number(limit) || 10,
       sort,
       filter
     );
