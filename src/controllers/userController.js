@@ -11,15 +11,7 @@ import {
 const createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const isValidEmail = reg.test(email);
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-    if (isValidEmail === false) {
-      return res.status(400).json({ message: "Invalid email" });
-    }
-
+    console.log("name: ", name, "email: ", email, "password: ", password);
     let data = await createUserService(name, email, password);
     return res.status(200).json(data);
   } catch (error) {
@@ -30,9 +22,6 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // if (!email || !password) {
-    //   return res.status(400).json({ message: "All fields are required" });
-    // }
     let data = await loginUserService(email, password);
     const { refresh_token, ...filteredData } = data.DT;
     res.cookie("refresh_token", refresh_token, {

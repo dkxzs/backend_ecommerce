@@ -7,7 +7,7 @@ const auth = (req, res, next) => {
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) {
-      return res.status(404).json({ EC: 1, EM: "Invalid token" });
+      return res.status(404).json({ EC: 1, EM: err.message });
     }
 
     if (user?.isAdmin) {

@@ -4,6 +4,8 @@ import {
   getDetailProductService,
   deleteProductService,
   getAllProductService,
+  getAllNewProductService,
+  getAllTypeService,
 } from "../services/productService.js";
 
 const createProduct = async (req, res) => {
@@ -29,7 +31,6 @@ const createProduct = async (req, res) => {
       !type ||
       !rating ||
       !countInStock
-
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -76,7 +77,7 @@ const getAllProduct = async (req, res) => {
 
     let data = await getAllProductService(
       Number(page) || 0,
-      Number(limit) || 10,
+      Number(limit) || 100,
       sort,
       filter
     );
@@ -85,10 +86,31 @@ const getAllProduct = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+const getAllNewProduct = async (req, res) => {
+  try {
+    let data = await getAllNewProductService();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const getAllType = async (req, res) => {
+  try {
+    let data = await getAllTypeService();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   createProduct,
   updateProduct,
   getDetailProduct,
   deleteProduct,
   getAllProduct,
+  getAllNewProduct,
+  getAllType,
 };

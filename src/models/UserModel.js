@@ -30,6 +30,9 @@ const userSchema = new Schema(
     avatar: {
       type: String,
     },
+    city: {
+      type: String,
+    },
   },
   {
     timestamps: true,

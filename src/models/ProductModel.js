@@ -48,6 +48,10 @@ const productSchema = new Schema(
       type: Number,
       required: false,
     },
+    color: {
+      type: String,
+      required: false,
+    },
     is_new: {
       type: Boolean,
       default: true,

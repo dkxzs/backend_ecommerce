@@ -5,6 +5,7 @@ const saltRounds = 10;
 
 const createUserService = async (name, email, password) => {
   try {
+    // console.log("name: ", name, "email: ", email, "password: ", password);
     let checkEmail = await User.findOne({ email: email });
     if (checkEmail) {
       return {
@@ -33,8 +34,6 @@ const createUserService = async (name, email, password) => {
     };
   }
 };
-
-
 
 const loginUserService = async (email, password) => {
   try {

@@ -127,7 +127,7 @@ const deleteProductService = async (id) => {
   }
 };
 
-const getAllProductService = async (page = 0, limit = 10, sort, filter) => {
+const getAllProductService = async (page = 0, limit = 5, sort, filter) => {
   try {
     const totalProduct = await Product.countDocuments();
 
@@ -191,10 +191,50 @@ const getAllProductService = async (page = 0, limit = 10, sort, filter) => {
   }
 };
 
+const getAllNewProductService = async () => {
+  try {
+    let res = await Product.find({ is_new: true });
+    return {
+      EM: "Get all new product successfully",
+      EC: 0,
+      DT: res,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+const getAllTypeService = async () => {
+  try {
+    let res = await Product.distinct("type");
+    return {
+      EM: "Get all type successfully",
+      EC: 0,
+      DT: res,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+
+
 export {
   createProductService,
   updateProductService,
   getDetailProductService,
   deleteProductService,
   getAllProductService,
+  getAllNewProductService,
+  getAllTypeService,
 };
