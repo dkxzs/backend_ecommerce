@@ -167,9 +167,28 @@ const cancelOrderService = async (orderId, result) => {
   }
 };
 
+const getAllOrderService = async () => {
+  try {
+    let res = await Order.find();
+    return {
+      EM: "Get all order successfully",
+      EC: 0,
+      DT: res,
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      EM: "Something went wrong",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 export {
   createOrderService,
   getAllOrderDetailByUserIdService,
   getOrderDetailByOrderIdService,
   cancelOrderService,
+  getAllOrderService,
 };
