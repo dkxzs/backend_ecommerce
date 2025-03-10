@@ -26,8 +26,8 @@ const loginUser = async (req, res) => {
     const { refresh_token, ...filteredData } = data.DT;
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
-      secure: false,
-      // sameSite: "strict",
+      secure: true,
+      sameSite: none,
     });
     return res.status(200).json({ ...data, DT: filteredData });
   } catch (error) {
