@@ -10,10 +10,10 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    origin: "https://s-shop-murex.vercel.app/",
+    origin: ["http://localhost:5173", "https://s-shop-murex.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Cho phép credentials (cookies, auth headers)
+    optionsSuccessStatus: 200,
   })
 );
 const port = process.env.PORT || 8080;
